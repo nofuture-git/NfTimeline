@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using NoFuture.Shared;
-using NoFuture.Shared.Core;
+//using NoFuture.Shared.Core;
 
 namespace NoFuture.Timeline
 {
@@ -69,11 +67,11 @@ namespace NoFuture.Timeline
                 string tName;
                 string tYear;
                 double iYear;
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out tName, 1))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out tName, 1))
                 {
                     _name = tName;
                 }
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out tYear, 2) && double.TryParse(tYear, out iYear))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out tYear, 2) && double.TryParse(tYear, out iYear))
                 {
                     StartValue = iYear;
                 }
@@ -121,11 +119,11 @@ namespace NoFuture.Timeline
             {
                 string s1;
                 var tValue = value;
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 1))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 1))
                 {
                     _name = s1;
                 }
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 2))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 2))
                 {
                     _years = Ruler.ParseYearsRange(s1);
                 }
@@ -170,15 +168,15 @@ namespace NoFuture.Timeline
                 var tValue = value;
                 string s1;
                 double y1;
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 1))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 1))
                 {
                     _discoveredBy = s1;
                 }
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 2))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 2))
                 {
                     _name = s1;
                 }
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 3) && double.TryParse(s1, out y1))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 3) && double.TryParse(s1, out y1))
                 {
                     StartValue = y1;
                 }
@@ -223,15 +221,15 @@ namespace NoFuture.Timeline
                 var tValue = value;
                 string s1;
                 double y1;
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 1))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 1))
                 {
                     _title = s1;
                 }
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 2))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 2))
                 {
                     _author = s1;
                 }
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 3) && double.TryParse(s1, out y1))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 3) && double.TryParse(s1, out y1))
                 {
                     StartValue = y1;
                 }
@@ -280,15 +278,15 @@ namespace NoFuture.Timeline
             {
                 var tValue = value;
                 string s1;
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 1))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 1))
                 {
                     ExplorerName = s1;
                 }
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 2))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 2))
                 {
                     Area = s1;
                 }
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 3))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 3))
                 {
 
                     AssignStartEndValueByString(s1);
@@ -324,11 +322,11 @@ namespace NoFuture.Timeline
             {
                 var tValue = value;
                 string s1;
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 1))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 1))
                 {
                     Name = s1;
                 }
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 2))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out s1, 2))
                 {
                     Description = s1;
                 }
@@ -356,7 +354,7 @@ namespace NoFuture.Timeline
             {
                 var tValue = value;
                 string name;
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out name, 1))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out name, 1))
                 {
                     Name = name;
                 }
@@ -401,11 +399,11 @@ namespace NoFuture.Timeline
                 string ls;
                 int yob;
                 int yod;
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out name, 1))
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out name, 1))
                 {
                     Name = name;
                 }
-                if (RegexCatalog.IsRegexMatch(tValue, REGEX_PATTERN, out ls, 2) &&
+                if (TimelineExtensions.IsRegexMatch(tValue, REGEX_PATTERN, out ls, 2) &&
                     int.TryParse(ls.Split('-')[0], out yob) && int.TryParse(ls.Split('-')[1], out yod))
                 {
                     Yob = yob;

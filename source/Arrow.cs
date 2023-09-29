@@ -2,10 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using NoFuture.Util;
-using NoFuture.Util.Core;
-using NfString = NoFuture.Util.Core.NfString;
+//using NfString = NoFuture.Util.Core.NfString;
 
 namespace NoFuture.Timeline
 {
@@ -124,8 +121,9 @@ namespace NoFuture.Timeline
             }
 
             tc.Items.First(t => t.Index == arrowIdx.Item1).Text =
-                NfString.MergeString(arrowText.ToString(),
-                    new string(tc.Items.First(t => t.Index == arrowIdx.Item1).Text.ToArray())).ToCharArray().ToList();
+                arrowText.ToString().MergeString(
+                    new string(tc.Items.First(t => t.Index == arrowIdx.Item1)
+                        .Text.ToArray())).ToCharArray().ToList();
             
             return tc;
         }

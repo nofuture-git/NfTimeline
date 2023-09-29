@@ -2,14 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NoFuture.Util;
-using NoFuture.Util.Core;
-using NfString = NoFuture.Util.Core.NfString;
+using System.Text.RegularExpressions;
+//using NfString = NoFuture.Util.Core.NfString;
 
 namespace NoFuture.Timeline
 {
     public static class TimelineExtensions
     {
+        public static RegexOptions MyRegexOptions { get; set; } = RegexOptions.IgnoreCase;
+
         public static string ToStringUnixNewline(this StringBuilder stringBuilder)
         {
             return stringBuilder.ToString()
@@ -135,7 +136,7 @@ namespace NoFuture.Timeline
                     var newEntry = entry1i.Copy();
                     newEntry.Ranges.AddRange(entry2i.Ranges);
                     newEntry.Text =
-                        NfString.MergeString(new string(entry1i.Text.ToArray()), new string(entry2i.Text.ToArray()))
+                        MergeString(new string(entry1i.Text.ToArray()), new string(entry2i.Text.ToArray()))
                             .ToCharArray().Where(c => Convert.ToInt32(c) >= 0x20)
                             .ToList();
                     textCanvas.Items.Add(newEntry);
@@ -333,6 +334,149 @@ namespace NoFuture.Timeline
             }
 
             return consolidateYears;
+        }
+
+        /// <summary>
+        /// Pads a string on both sides with spaces so that the 
+        /// sum of the whole is equal to <see cref="printBlockWidth"/>.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="printBlockWidth"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <![CDATA[
+        /// PrintInCenter(22,"hello");//'         hello        ' the single-quotes are added for the example.
+        /// ]]>
+        /// </example>
+        public static string PrintInCenter(this string text, int printBlockWidth)
+        {
+            //validate the args
+            if (printBlockWidth < 0.0D)
+                throw new ArgumentException("the width must be a positive integer");
+
+            var printBlock = String.Format(("{0,-" + printBlockWidth + "}"), " ").ToCharArray();
+
+
+            if (String.IsNullOrWhiteSpace(text))
+                return new string(printBlock);
+
+            //set the text block to have an even number of items
+            var textBlock = text.ToCharArray();
+            if (textBlock.Length % 2 == 1)
+            {
+                textBlock = String.Format(" {0}", text).ToCharArray();
+            }
+
+            if (textBlock.Length >= printBlockWidth)
+                return new string(textBlock);
+
+            //find mid-point of the block
+            var blockMidPt = Math.Ceiling((double)printBlockWidth / 2);
+
+            //find mid-point of the text
+            var textMidPt = Math.Ceiling((double)text.Length / 2);
+
+            /*
+             * textBlock =  | |J|u|d|e|a|
+             *               0 1 2 3 4 5
+             * printBlock = | | | | | | | | | | | |
+             *               0 1 2 3 4 5 6 7 8 9 A
+             * pbMidPt = 5
+             * tbMidPt = 3
+                 
+             *  0 -> printBlock[0+5] = textBlock[0+3],
+             *        printBlock[5-0] = textBlock[3-0]
+             *  1 -> printBlock[1+5] = textBlock[1+3],
+             *        printBlock[(5-1)-1] = textBlock[(3-1)-1]
+             *  2 -> printBlock[2+5] = textBlock[2+3],
+             *        printBlock[(5-1)-2] = textBlock[(3-1)-2]
+             */
+
+            for (var i = 0; i < textMidPt; i++)
+            {
+                printBlock[i + (int)blockMidPt] = textBlock[i + (int)textMidPt];
+                printBlock[(int)blockMidPt - 1 - i] = textBlock[(int)textMidPt - 1 - i];
+            }
+
+            return new string(printBlock);
+        }
+
+        /// <summary>
+        /// Takes two strings and lays one atop the other by ordinal giving precedence 
+        /// to characters above 0x20.
+        /// </summary>
+        /// <param name="primaryString"></param>
+        /// <param name="secondaryString"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <![CDATA[
+        /// MergeString("|  this is primary ","AND            SECONDARY HERE");//|NDthis is primaryONDARY HERE
+        /// ]]>
+        /// </example>
+        public static string MergeString(this string primaryString, string secondaryString)
+        {
+            if (String.IsNullOrEmpty(primaryString) && String.IsNullOrEmpty(secondaryString))
+                return String.Empty;
+
+            Func<string, int, char> valOr0 = (c, i) => String.IsNullOrEmpty(c) || c.Length <= i ? (char)0x0 : c[i];
+
+            Func<string, string, int, char> primOrSec = (s, s1, arg3) =>
+            {
+                if (arg3 < 0) return (char)0x0;
+
+                var pChar = valOr0(primaryString, arg3);
+
+                //if the first char did not come back as \0 then make the second char \0
+                var sChar = Convert.ToInt32(pChar) != 0x0 ? (char)0x0 : valOr0(secondaryString, arg3);
+
+                //special circumstance to return secondary when primary is a space
+                if (valOr0(primaryString, arg3) <= (char)0x20 && valOr0(secondaryString, arg3) > (char)0x20)
+                    return valOr0(secondaryString, arg3);
+
+                return (char)(Convert.ToInt32(pChar) | Convert.ToInt32(sChar));
+            };
+
+            var length = (primaryString?.Length ?? 0) > secondaryString.Length
+                ? (primaryString?.Length ?? 0)
+                : secondaryString.Length;
+
+            var mergedChars = new char[length];
+            for (var i = 0; i < length; i++)
+            {
+                mergedChars[i] = primOrSec(primaryString, secondaryString, i);
+            }
+
+            return new string(mergedChars);
+        }
+
+        /// <summary>
+        /// Test the <see cref="subject"/> against the <see cref="pattern"/>
+        /// using the <see cref="MyRegexOptions"/>.
+        /// </summary>
+        /// <param name="subject"></param>
+        /// <param name="pattern"></param>
+        /// <param name="match"></param>
+        /// <param name="matchGroup">The index value of the Groups array within the first Matches</param>
+        /// <returns>
+        /// The value of the first group.
+        /// </returns>
+        public static bool IsRegexMatch(string subject, string pattern, out string match, int matchGroup = 0)
+        {
+            match = null;
+            if (string.IsNullOrEmpty(subject) || string.IsNullOrEmpty(pattern))
+                return false;
+
+            var regex = new Regex(pattern, MyRegexOptions);
+
+            if (!regex.IsMatch(subject))
+                return false;
+
+            var grp = regex.Matches(subject)[0];
+            if (!grp.Success)
+                return false;
+            match = grp.Groups[matchGroup].Value;
+            return true;
+
         }
     }
 }

@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
 using System.Text;
-using NoFuture.Util.Core;
-using NfString = NoFuture.Util.Core.NfString;
 
 namespace NoFuture.Timeline
 {
@@ -48,7 +46,7 @@ namespace NoFuture.Timeline
             switch (Location)
             {
                 case PrintLocation.Center:
-                    strBuilder.AppendLine(NfString.PrintInCenter(Text, Width));
+                    strBuilder.AppendLine(Text.PrintInCenter(Width));
                     break;
                 case PrintLocation.Left:
                     strBuilder.AppendLine(string.Format(sfOpL(Width), Text));
@@ -66,7 +64,7 @@ namespace NoFuture.Timeline
                 switch (Location)
                 {
                     case PrintLocation.Center:
-                        strBuilder.AppendLine(NfString.PrintInCenter(Config.GraphChars.LifeLine.ToString(), Width));
+                        strBuilder.AppendLine(Config.GraphChars.LifeLine.ToString().PrintInCenter(Width));
                         break;
                     case PrintLocation.Left:
                         strBuilder.AppendLine(string.Format(sfOpL(Width), Config.GraphChars.LifeLine));
@@ -79,7 +77,7 @@ namespace NoFuture.Timeline
             switch (Location)
             {
                 case PrintLocation.Center:
-                    strBuilder.AppendLine(NfString.PrintInCenter(new string(Config.GraphChars.Rail,3), Width));
+                    strBuilder.AppendLine(new string(Config.GraphChars.Rail,3).PrintInCenter(Width));
                     break;
                 case PrintLocation.Left:
                     strBuilder.AppendLine(string.Format(sfOpL(Width), new string(Config.GraphChars.Rail, 3)));
