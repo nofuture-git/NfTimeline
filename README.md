@@ -14,7 +14,7 @@ The timelines require a fixed-width font such as Courier.
 
 The original inspiration was from the book, _"A History of Israel" 4th ed. by John Bright_.  This book contained chronological charts that mapped time along the vertical axis and particular political polities as rectangles queued right to left.  This layout allows for illustrating political conflict (typically wars and battles) between the polities as arrows pointing from one block to another.  Here is an example from chart number 7 concerning the rise of the Roman Empire (325 BCE - 27 BCE).  
 
-I created specific dotnet types for the various kinds of entries.  As you can see in the example below: territorial expansion is typically on the right and is prefixed with a '+', political leaders are enclosed in square braces and also appear on the right, works of art and literature are typically in the middle in the form of title and author\artist, etc.
+I created specific dotnet types for the various kinds of entries.  As you can see in the example below: territorial expansion is typically on the right and is prefixed with a '+' (e.g. `+Bithynia & Cyrene(76) `), political leaders are enclosed in square braces and also appear on the right (e.g.`[Antiochus VII 125-96]`), works of art and literature are typically in the middle in the form of title and author\artist (e.g. `'The Aeneid'Virgil(25)`), etc.
 
 The code is made to auto-expand to fit the entries.  Each entry requires a date (or range of dates), and the code will automatically place the entry to match the vertical axis for the given date.  There are times when I had to tweek the entries to get them to all fit in particularly busy part of the chart.
 
